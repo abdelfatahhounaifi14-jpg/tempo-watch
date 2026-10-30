@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEMPO WATCH - إدارة المنتجات</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: #222;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 22px;
+    border-bottom: 4px solid #d4af37;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h1 {
+    color: #d4af37;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 15px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-box, .products-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 12px #00000010;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    width: 100%;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: #d4af37;
+    color: #111;
+    margin-top: 18px;
+}
+
+.cancel-btn {
+    background: #ddd;
+    margin-top: 18px;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.product {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    padding-bottom: 15px;
+}
+
+.product img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    background: #eee;
+}
+
+.product h3, .product p {
+    margin: 10px 14px;
+}
+
+.product .price {
+    color: #987515;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 8px;
+    padding: 0 14px;
+}
+
+.edit-btn {
+    background: #222;
+    color: white;
+}
+
+.delete-btn {
+    background: #b52b2b;
+    color: white;
+}
+
+#message {
+    margin-bottom: 15px;
+    color: #26733b;
+    font-weight: bold;
+}
+
+@media(max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>TEMPO WATCH</h1>
+    <a href="admin.html">العودة للوحة الإدارة ←</a>
+</header>
+
+<div class="container">
+
+    <div class="form-box">
+        <h2>إضافة منتج جديد</h2>
+        <p id="message"></p>
+
+        <form id="productForm">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>اسم المنتج</label>
+                    <input id="name" type="text" required
+                    placeholder="مثال: ساعة رجالية فاخرة">
+                </div>
+
+                <div class="field">
+                    <label>الثمن بالدرهم MAD</label>
+                    <input id="price" type="number" min="0"
+                    step="0.01" required placeholder="299">
+                </div>
+
+                <div class="field">
+                    <label>نوع الساعة</label>
+                    <select id="category" required>
+                        <option value="">اختر النوع</option>
+                        <option>رجالية</option>
+                        <option>نسائية</option>
+                        <option>ذكية</option>
+                        <option>رياضية</option>
+                        <option>فاخرة</option>
+                        <option>كلاسيكية</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>الماركة</label>
+                    <input id="brand" type="text"
+                    placeholder="مثال: Casio">
+                </div>
+
+                <div class="field">
+                    <label>اللون</label>
+                    <input id="color" type="text"
+                    placeholder="أسود، ذهبي، فضي...">
+                </div>
+
+                <div class="field">
+                    <label>الكمية المتوفرة</label>
+                    <input id="stock" type="number" min="0"
+                    value="1" required>
+                </div>
+
+                <div class="field full">
+                    <label>صورة المنتج</label>
+                    <input id="image" type="file"
+                    accept="image/*">
+                </div>
+
+                <div class="field full">
+                    <label>وصف المنتج</label>
+                    <textarea id="description"
+                    placeholder="اكتب تفاصيل الساعة ومميزاتها..."></textarea>
+                </div>
+
+            </div>
+
+            <button class="save-btn" type="submit">
+                حفظ المنتج
+            </button>
+
+            <button class="cancel-btn" type="button"
+            id="cancelEdit" hidden>
+                إلغاء التعديل
+            </button>
+
+        </form>
+    </div>
+
+    <div class="products-box">
+        <h2>المنتجات المسجلة</h2>
+        <div id="productList" class="product-list"></div>
+    </div>
+
+</div>
+
+<script>  <script>
+if (sessionStorage.getItem("tempoAdminLoggedIn") !== "true") {
+    window.location.replace("login.html");
+}
+
+const KEY = "tempoProducts";
+const KEY = "tempoProducts";
+
+let products = JSON.parse(localStorage.getItem(KEY) || "[]");
+let editingId = null;
+let selectedImage = "";
+
+const form = document.getElementById("productForm");
+const message = document.getElementById("message");
+const productList = document.getElementById("productList");
+const imageInput = document.getElementById("image");
+
+function saveProducts() {
+    localStorage.setItem(KEY, JSON.stringify(products));
+}
+
+imageInput.addEventListener("change", function() {
+    const file = this.files[0];
+
+    if (!file) {
+        selectedImage = "";
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("اختار ملف صورة فقط.");
+        this.value = "";
+        return;
+    }
+
+    if (file.size > 1024 * 1024) {
+        alert("الصورة كبيرة بزاف. اختار صورة أقل من 1MB.");
+        this.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        selectedImage = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+});
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const price = Number(document.getElementById("price").value);
+    const stock = Number(document.getElementById("stock").value);
+
+    if (!name || !Number.isFinite(price) || price < 0 ||
+        !Number.isInteger(stock) || stock < 0) {
+        alert("راجع الاسم والثمن والكمية.");
+        return;
+    }
+
+    const oldProduct = products.find(p => p.id === editingId);
+
+    const product = {
+        id: editingId || Date.now().toString(),
+        name: name,
+        price: price,
+        category: document.getElementById("category").value,
+        brand: document.getElementById("brand").value,
+        color: document.getElementById("color").value,
+        stock: stock,
+        description: document.getElementById("description").value,
+        image: selectedImage || (oldProduct ? oldProduct.image : "")
+    };
+
+    if (editingId) {
+        products = products.map(p =>
+            p.id === editingId ? product : p
+        );
+        message.textContent = "تم تعديل المنتج بنجاح.";
+    } else {
+        products.push(product);
+        message.textContent = "تمت إضافة المنتج بنجاح.";
+    }
+
+    saveProducts();
+    form.reset();
+    selectedImage = "";
+    editingId = null;
+    document.getElementById("cancelEdit").hidden = true;
+    document.querySelector(".save-btn").textContent = "حفظ المنتج";
+
+    renderProducts();
+});
+
+function renderProducts() {
+    productList.innerHTML = "";
+
+    if (products.length === 0) {
+        productList.textContent = "مازال ما ضفتي حتى منتج.";
+        return;
+    }
+
+    products.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "product";
+
+        const img = document.createElement("img");
+        img.alt = product.name;
+
+        if (product.image) {
+            img.src = product.image;
+        } else {
+            img.alt = "لا توجد صورة";
+        }
+
+        const title = document.createElement("h3");
+        title.textContent = product.name;
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = product.price + " DH";
+
+        const details = document.createElement("p");
+        details.textContent =
+            product.category + " | " +
+            (product.brand || "بدون ماركة") +
+            " | الكمية: " + product.stock;
+
+        const description = document.createElement("p");
+        description.textContent = product.description;
+
+        const actions = document.createElement("div");
+        actions.className = "product-actions";
+
+        const edit = document.createElement("button");
+        edit.className = "edit-btn";
+        edit.textContent = "تعديل";
+        edit.addEventListener("click", () => editProduct(product.id));
+
+        const remove = document.createElement("button");
+        remove.className = "delete-btn";
+        remove.textContent = "حذف";
+        remove.addEventListener("click", () => deleteProduct(product.id));
+
+        actions.append(edit, remove);
+        card.append(img, title, price, details, description, actions);
+        productList.appendChild(card);
+    });
+}
+
+function editProduct(id) {
+    const p = products.find(item => item.id === id);
+    if (!p) return;
+
+    editingId = id;
+    selectedImage = "";
+
+    document.getElementById("name").value = p.name;
+    document.getElementById("price").value = p.price;
+    document.getElementById("category").value = p.category;
+    document.getElementById("brand").value = p.brand;
+    document.getElementById("color").value = p.color;
+    document.getElementById("stock").value = p.stock;
+    document.getElementById("description").value = p.description;
+    imageInput.value = "";
+
+    document.querySelector(".save-btn").textContent = "حفظ التعديلات";
+    document.getElementById("cancelEdit").hidden = false;
+    message.textContent = "أنت الآن تعدل هذا المنتج.";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteProduct(id) {
+    if (!confirm("واش متأكد بغيتي تحذف هاد المنتج؟")) return;
+
+    products = products.filter(p => p.id !== id);
+    saveProducts();
+    renderProducts();
+    message.textContent = "تم حذف المنتج.";
+}
+
+document.getElementById("cancelEdit").addEventListener("click", function() {
+    form.reset();
+    editingId = null;
+    selectedImage = "";
+    this.hidden = true;
+    document.querySelector(".save-btn").textContent = "حفظ المنتج";
+    message.textContent = "";
+});
+
+renderProducts();
+</script>
+
+</body>
+</html>
